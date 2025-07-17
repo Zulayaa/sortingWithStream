@@ -1,0 +1,100 @@
+import java.util.Comparator;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.stream.Collectors;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        List<Person> people = new ArrayList<>();
+        boolean running = true;
+
+        printMenu();
+
+        while (running) {
+            System.out.print("Command:\n-> ");
+            String command = scanner.nextLine().toLowerCase();
+
+            switch (command) {
+                default :
+                    System.out.println("Unknown command! (type 'help' for commands)");
+                    break;
+
+                case "1" :
+                    addPerson(scanner, people);
+                    break;
+
+                case "2" :
+                    printList(people);
+                    break;
+
+                case "3" :
+                    sortByName(people);
+                    break;
+
+                case "4" :
+                    sortByAge(people);
+                    break;
+
+                case "x" :
+                    running = false;
+                    break;
+
+                case "help" :
+                    printMenu();
+                    break;
+            }
+        }
+    }
+
+    public static void printMenu() {
+        System.out.println("Commands:");
+        System.out.println("1 -> Upload a person's data to the list");
+        System.out.println("2 -> Print the list of people");
+        System.out.println("3 -> Sort by name, then print the list");
+        System.out.println("4 -> Sort by age, then print the list");
+        System.out.println("X -> Quit");
+    }
+
+    public static void printList(List<Person> people) {
+        for (Person prsn : people) {
+            System.out.println(prsn);
+        }
+    }
+
+    public static void addPerson(Scanner scanner, List<Person> people) {
+        System.out.println("Name of the person:");
+        String name = scanner.nextLine();
+
+        System.out.println("Age of the person:");
+        int age = 0;
+        while (true) {
+            try {
+                age = Integer.valueOf(scanner.nextLine());
+                if (age < 0) {
+                    System.out.println("Há' hogy lehetne egy ember negatív korban?");
+                } else {
+                    break;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Hülye vagy fiam, ez nem szám. Try again:");
+            }
+        }
+        people.add(new Person(name, age));
+    }
+
+    public static void sortByName(List<Person> people) {
+        List<Person> sortedByName = people.stream()
+                .sorted(Comparator.comparing(Person::getName))
+                .collect(Collectors.toList());
+        printList(sortedByName);
+    }
+
+    public static void sortByAge(List<Person> people) {
+        List<Person> sortedByAge = people.stream()
+                .sorted(Comparator.comparingInt(Person::getAge))
+                .collect(Collectors.toList());
+        printList(sortedByAge);
+    }
+}
